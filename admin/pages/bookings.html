@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EcoQuest Admin | Bookings</title>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/bookings.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- Sidebar -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <h2>EcoQuest</h2>
+
+            <span>Travel Admin</span>
+
+        </div>
+
+        <ul>
+            <li onclick="location.href='dashboard.html'">
+
+    <i class="fa-solid fa-chart-line"></i>
+
+    Dashboard
+
+</li>
+
+            <li class="active">
+
+                <i class="fa-solid fa-calendar-check"></i>
+
+                Bookings
+
+            </li>
+
+            <li onclick="location.href='customers.html'">
+
+                <i class="fa-solid fa-users"></i>
+
+                Customers
+
+            </li>
+<!--
+            <li onclick="location.href='destinations.html'">
+
+                <i class="fa-solid fa-location-dot"></i>
+
+                Destinations
+
+            </li>
+        -->
+            <li onclick="location.href='messages.html'">
+
+                <i class="fa-solid fa-envelope"></i>
+
+                Messages
+
+            </li>
+
+            <li onclick="location.href='reviews.html'">
+
+                <i class="fa-solid fa-star"></i>
+
+                Reviews
+
+            </li>
+
+            <li onclick="location.href='settings.html'">
+
+                <i class="fa-solid fa-gear"></i>
+
+                Settings
+
+            </li>
+
+            <li id="logout">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                Logout
+
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <!-- Main -->
+
+    <main class="main-content">
+
+        <!-- Top -->
+
+        <div class="topbar">
+
+            <div>
+
+                <h1>Bookings</h1>
+
+                <p>Manage safari bookings</p>
+
+            </div>
+
+            <div class="top-actions">
+
+                <button class="btn export">
+
+                    <i class="fa-solid fa-file-export"></i>
+
+                    Export
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- Cards -->
+
+        <div class="cards">
+
+            <div class="card">
+
+                <h3>Total Bookings</h3>
+
+                <h1 id="totalBookings">0</h1>
+
+            </div>
+
+            <div class="card pending">
+
+                <h3>Pending</h3>
+
+                <h1 id="pendingBookings">0</h1>
+
+            </div>
+
+            <div class="card confirmed">
+
+                <h3>Confirmed</h3>
+
+                <h1 id="confirmedBookings">0</h1>
+
+            </div>
+
+            <div class="card cancelled">
+
+                <h3>Cancelled</h3>
+
+                <h1 id="cancelledBookings">0</h1>
+
+            </div>
+
+        </div>
+
+        <!-- Toolbar -->
+
+        <div class="booking-toolbar">
+
+            <input
+                type="text"
+                id="searchBooking"
+                placeholder="Search booking...">
+
+            <select id="statusFilter">
+
+                <option value="ALL">All Status</option>
+                <option value="PENDING">Pending</option>
+                <option value="CONFIRMED">Confirmed</option>
+                <option value="CANCELLED">Cancelled</option>
+
+            </select>
+
+        </div>
+
+        <!-- Table -->
+
+        <div class="table-section">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Name</th>
+
+                        <th>Destination</th>
+
+                        <th>Travel Date</th>
+
+                        <th>Travellers</th>
+
+                        <th>Status</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="bookingTable">
+
+                    <tr>
+
+                        <td colspan="6">
+
+                            Loading bookings...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+</div>
+
+<!-- ===================== -->
+<!-- Booking Details Modal -->
+<!-- ===================== -->
+
+<div class="modal" id="bookingModal">
+
+    <div class="modal-content large">
+
+        <div class="modal-header">
+
+            <h2>
+
+                <i class="fa-solid fa-suitcase"></i>
+
+                Booking Details
+
+            </h2>
+
+            <span id="closeModal">&times;</span>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="details-grid">
+
+                <div>
+
+                    <label>Customer</label>
+
+                    <p id="mName"></p>
+
+                </div>
+
+                <div>
+
+                    <label>Email</label>
+
+                    <p id="mEmail"></p>
+
+                </div>
+
+                <div>
+
+                    <label>Phone</label>
+
+                    <p id="mPhone"></p>
+
+                </div>
+
+                <div>
+
+                    <label>Destination</label>
+
+                    <p id="mDestination"></p>
+
+                </div>
+
+                <div>
+
+                    <label>Travel Date</label>
+
+                    <p id="mTravelDate"></p>
+
+                </div>
+
+                <div>
+
+                    <label>Travellers</label>
+
+                    <p id="mTravellers"></p>
+
+                </div>
+
+                <div>
+
+                    <label>Budget</label>
+
+                    <p id="mBudget"></p>
+
+                </div>
+
+                <div>
+
+                    <label>Citizenship</label>
+
+                    <p id="mCitizenship"></p>
+
+                </div>
+
+                <div>
+
+                    <label>Status</label>
+
+                    <p id="mStatus"></p>
+
+                </div>
+
+            </div>
+
+            <div class="notes">
+
+                <h3>Additional Notes</h3>
+
+                <p id="mNotes"></p>
+
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button class="confirm-btn" id="confirmBooking">
+
+                Confirm
+
+            </button>
+
+            <button class="cancel-btn" id="cancelBooking">
+
+                Cancel
+
+            </button>
+
+            <button class="delete-btn" id="deleteBooking">
+
+                Delete
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="js/admin.js"></script>
+<script src="js/bookings.js"></script>
+
+
+</body>
+
+</html>

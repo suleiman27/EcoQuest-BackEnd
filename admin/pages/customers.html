@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>EcoQuest Admin | Customers</title>
+
+
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/customers.css">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+
+</head>
+
+
+
+
+<body>
+
+
+
+<div class="dashboard">
+
+
+
+<!-- ================= SIDEBAR ================= -->
+
+
+<aside class="sidebar">
+
+
+<div class="logo">
+
+
+<h2>
+EcoQuest
+</h2>
+
+
+<span>
+Travel Admin
+</span>
+
+
+</div>
+
+
+
+
+
+<ul>
+
+
+
+<li onclick="location.href='dashboard.html'">
+
+<i class="fa-solid fa-chart-line"></i>
+
+Dashboard
+
+</li>
+
+
+
+
+
+<li onclick="location.href='bookings.html'">
+
+<i class="fa-solid fa-calendar-check"></i>
+
+Bookings
+
+</li>
+
+
+
+
+
+<li class="active">
+
+
+<i class="fa-solid fa-users"></i>
+
+Customers
+
+
+</li>
+
+
+
+
+
+<!--
+            <li onclick="location.href='destinations.html'">
+
+                <i class="fa-solid fa-location-dot"></i>
+
+                Destinations
+
+            </li>
+        -->
+
+
+<li onclick="location.href='messages.html'">
+
+<i class="fa-solid fa-envelope"></i>
+
+Messages
+
+</li>
+
+
+
+
+
+<li onclick="location.href='reviews.html'">
+
+<i class="fa-solid fa-star"></i>
+
+Reviews
+
+</li>
+
+
+
+
+
+<li onclick="location.href='settings.html'">
+
+<i class="fa-solid fa-gear"></i>
+
+Settings
+
+</li>
+
+
+
+
+
+<li id="logout">
+
+<i class="fa-solid fa-right-from-bracket"></i>
+
+Logout
+
+</li>
+
+
+
+
+</ul>
+
+
+
+</aside>
+
+
+
+
+
+
+
+
+
+
+<!-- ================= MAIN CONTENT ================= -->
+
+
+<main class="main-content">
+
+
+
+
+
+<!-- ================= TOPBAR ================= -->
+
+
+<div class="topbar">
+
+
+<div>
+
+
+<h1>
+Customers
+</h1>
+
+
+<p>
+Manage EcoQuest travellers and customer records
+</p>
+
+
+</div>
+
+<div class="profile">
+
+    <i class="fa-solid fa-circle-user"></i>
+
+    <span id="adminName"></span>
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ================= STAT CARDS ================= -->
+
+
+<div class="cards">
+
+
+
+<div class="card">
+
+
+<h3>
+Total Customers
+</h3>
+
+
+<h1 id="totalCustomers">
+0
+</h1>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h3>
+Active Customers
+</h3>
+
+
+<h1 id="activeCustomers">
+0
+</h1>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h3>
+Travellers
+</h3>
+
+
+<h1 id="travellers">
+0
+</h1>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h3>
+Revenue
+</h3>
+
+
+<h1 id="revenue">
+
+KSh 0
+
+</h1>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ================= CUSTOMER MANAGEMENT ================= -->
+
+
+<section class="customer-panel">
+
+
+
+
+
+<div class="panel-header">
+
+
+
+<h2>
+
+<i class="fa-solid fa-users"></i>
+
+Customer Records
+
+</h2>
+
+
+
+
+
+
+
+<div class="actions">
+
+
+<input
+
+type="text"
+
+id="searchCustomer"
+
+placeholder="Search customer..."
+
+>
+
+
+
+
+
+<button id="refreshBtn">
+
+
+<i class="fa-solid fa-rotate"></i>
+
+Refresh
+
+
+</button>
+
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ================= TABLE ================= -->
+
+
+
+<div class="table-section">
+
+
+<table>
+
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+#
+</th>
+
+
+<th>
+Name
+</th>
+
+
+<th>
+Email
+</th>
+
+
+<th>
+Phone
+</th>
+
+
+<th>
+Trips
+</th>
+
+
+<th>
+Last Booking
+</th>
+
+
+<th>
+Status
+</th>
+
+
+<th>
+Actions
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+<tbody id="customerTable">
+
+
+<tr>
+
+<td colspan="8">
+
+Loading customers...
+
+</td>
+
+</tr>
+
+
+
+</tbody>
+
+
+
+
+</table>
+
+
+</div>
+
+
+
+
+
+</section>
+
+
+
+
+
+
+</main>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ================= CUSTOMER MODAL ================= -->
+
+
+<div class="modal" id="customerModal">
+
+
+<div class="modal-content">
+
+
+
+<div class="modal-header">
+
+
+<h2>
+
+<i class="fa-solid fa-user"></i>
+
+Customer Details
+
+</h2>
+
+
+
+<span class="close">
+
+&times;
+
+</span>
+
+
+
+</div>
+
+
+
+
+
+
+<div class="modal-body" id="customerDetails">
+
+
+Loading...
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<script src="js/admin.js"></script>
+<script src="js/customers.js"></script>
+
+
+
+
+</body>
+
+</html>

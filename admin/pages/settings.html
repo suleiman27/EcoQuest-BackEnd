@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>EcoQuest Admin | Settings</title>
+
+
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/settings.css">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+
+</head>
+
+
+
+<body>
+
+
+
+<div class="dashboard">
+
+
+
+<!-- ==========================
+SIDEBAR
+========================== -->
+
+
+<aside class="sidebar">
+
+
+<div class="logo">
+
+
+<h2>
+EcoQuest
+</h2>
+
+
+<span>
+Travel Admin
+</span>
+
+
+</div>
+
+
+
+
+<ul>
+
+
+<li onclick="location.href='dashboard.html'">
+
+<i class="fa-solid fa-chart-line"></i>
+
+Dashboard
+
+</li>
+
+
+
+
+<li onclick="location.href='bookings.html'">
+
+<i class="fa-solid fa-calendar-check"></i>
+
+Bookings
+
+</li>
+
+
+
+
+
+<li onclick="location.href='customers.html'">
+
+<i class="fa-solid fa-users"></i>
+
+Customers
+
+</li>
+
+<!--
+            <li onclick="location.href='destinations.html'">
+
+                <i class="fa-solid fa-location-dot"></i>
+
+                Destinations
+
+            </li>
+        -->
+
+<li onclick="location.href='messages.html'">
+
+<i class="fa-solid fa-envelope"></i>
+
+Messages
+
+</li>
+
+
+
+
+
+<li onclick="location.href='reviews.html'">
+
+<i class="fa-solid fa-star"></i>
+
+Reviews
+
+</li>
+
+
+
+
+
+<li class="active">
+
+
+<i class="fa-solid fa-gear"></i>
+
+Settings
+
+
+</li>
+
+
+
+
+
+<li id="logout">
+
+
+<i class="fa-solid fa-right-from-bracket"></i>
+
+Logout
+
+
+</li>
+
+
+</ul>
+
+
+
+</aside>
+
+
+
+
+
+
+
+
+
+<!-- ==========================
+MAIN CONTENT
+========================== -->
+
+
+<main class="main-content">
+
+
+
+<!-- TOPBAR -->
+
+
+<div class="topbar">
+
+
+<div>
+
+
+<h1>
+Settings
+</h1>
+
+
+<p>
+Manage admin account and preferences
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- PROFILE -->
+
+
+<div class="settings-card">
+
+
+<h2>
+
+<i class="fa-solid fa-user"></i>
+
+Admin Profile
+
+</h2>
+
+
+
+
+<form id="settingsForm">
+
+
+
+<label>
+Username
+</label>
+
+
+<input
+
+type="text"
+
+id="adminName"
+
+placeholder="Enter username"
+
+required>
+
+
+<label>
+Email Address
+</label>
+
+
+<input
+
+type="email"
+
+id="adminEmail"
+
+placeholder="Enter email"
+
+required>
+
+
+
+
+
+<button type="submit">
+
+
+<i class="fa-solid fa-save"></i>
+
+Save Changes
+
+
+</button>
+
+
+
+
+</form>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- PASSWORD -->
+
+
+<div class="settings-card">
+
+
+<h2>
+
+
+<i class="fa-solid fa-lock"></i>
+
+
+Change Password
+
+
+</h2>
+
+
+
+
+<form id="passwordForm">
+
+
+
+<label>
+Current Password
+</label>
+
+
+<input
+
+type="password"
+
+id="oldPassword"
+
+placeholder="Current password"
+
+required>
+
+
+
+
+<label>
+New Password
+</label>
+
+
+<input
+
+type="password"
+
+id="newPassword"
+
+placeholder="New password"
+
+required>
+
+
+
+
+
+<button type="submit">
+
+
+<i class="fa-solid fa-key"></i>
+
+Update Password
+
+
+</button>
+
+
+
+
+</form>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- PREFERENCES -->
+
+
+<div class="settings-card">
+
+
+<h2>
+
+
+<i class="fa-solid fa-sliders"></i>
+
+
+System Preferences
+
+
+</h2>
+
+
+
+
+
+<div class="setting-row">
+
+
+
+<div>
+
+
+<h3>
+Dark Mode
+</h3>
+
+
+<p>
+Switch dashboard appearance
+</p>
+
+
+</div>
+
+
+
+
+
+<label class="switch">
+
+
+<input 
+type="checkbox"
+id="themeToggle">
+
+
+<span class="slider"></span>
+
+
+</label>
+
+
+
+
+
+</div>
+
+
+
+</div>
+
+</main>
+
+
+
+</div>
+
+
+
+
+<script src="js/admin.js"></script>
+<script src="js/settings.js"></script>
+
+
+
+</body>
+
+
+</html>

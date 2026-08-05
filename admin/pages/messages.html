@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>EcoQuest Admin | Messages</title>
+
+
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/messages.css">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+
+</head>
+
+
+<body>
+
+
+<div class="dashboard">
+
+
+
+<!-- ================= SIDEBAR ================= -->
+
+
+<aside class="sidebar">
+
+
+<div class="logo">
+
+<h2>
+
+<i class="fa-solid fa-leaf"></i>
+
+EcoQuest
+
+</h2>
+
+<span>
+Travel Admin
+</span>
+
+</div>
+
+
+
+<ul>
+
+
+<li onclick="location.href='dashboard.html'">
+
+<i class="fa-solid fa-chart-line"></i>
+
+Dashboard
+
+</li>
+
+
+
+<li onclick="location.href='bookings.html'">
+
+<i class="fa-solid fa-calendar-check"></i>
+
+Bookings
+
+</li>
+
+
+
+
+<li onclick="location.href='customers.html'">
+
+<i class="fa-solid fa-users"></i>
+
+Customers
+
+</li>
+
+
+
+
+<!--
+            <li onclick="location.href='destinations.html'">
+
+                <i class="fa-solid fa-location-dot"></i>
+
+                Destinations
+
+            </li>
+        -->
+
+
+
+
+<li class="active">
+
+<i class="fa-solid fa-envelope"></i>
+
+Messages
+
+</li>
+
+
+
+
+<li onclick="location.href='reviews.html'">
+
+<i class="fa-solid fa-star"></i>
+
+Reviews
+
+</li>
+
+
+
+
+<li onclick="location.href='settings.html'">
+
+<i class="fa-solid fa-gear"></i>
+
+Settings
+
+</li>
+
+
+
+
+<li id="logout">
+
+<i class="fa-solid fa-right-from-bracket"></i>
+
+Logout
+
+</li>
+
+
+</ul>
+
+
+</aside>
+
+
+
+
+
+<!-- ================= MAIN CONTENT ================= -->
+
+
+<main class="main-content">
+
+
+
+<!-- TOP BAR -->
+
+
+<div class="topbar">
+
+
+<div>
+
+<h1>
+Messages
+</h1>
+
+
+<p>
+Manage customer enquiries
+</p>
+
+
+</div>
+
+
+
+
+<div class="top-actions">
+
+
+<div class="search-box">
+
+
+<i class="fa-solid fa-search"></i>
+
+
+<input
+
+type="text"
+
+id="searchMessage"
+
+placeholder="Search messages...">
+
+
+</div>
+
+
+
+
+<button class="btn export">
+
+
+<i class="fa-solid fa-file-export"></i>
+
+
+Export
+
+
+</button>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+<!-- ================= CARDS ================= -->
+
+
+<div class="cards">
+
+
+
+<div class="card">
+
+
+<h3>
+Total Messages
+</h3>
+
+
+<h1 id="messageCount">
+0
+</h1>
+
+
+</div>
+
+
+
+
+
+<div class="card confirmed">
+
+
+<h3>
+Today's Messages
+</h3>
+
+
+<h1 id="todayMessages">
+0
+</h1>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<!-- ================= TABLE ================= -->
+
+
+<div class="table-section">
+
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+Sender
+</th>
+
+
+<th>
+Subject
+</th>
+
+
+<th>
+Date Received
+</th>
+
+
+<th>
+Actions
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+<tbody id="messageTable">
+
+
+
+<tr>
+
+
+<td colspan="4">
+
+
+<i class="fa-solid fa-spinner fa-spin"></i>
+
+
+Loading messages...
+
+
+</td>
+
+
+</tr>
+
+
+
+</tbody>
+
+
+
+</table>
+
+
+
+</div>
+
+
+
+
+
+
+</main>
+
+
+
+</div>
+
+
+
+
+
+
+
+<!-- ================= MESSAGE DETAILS MODAL ================= -->
+
+
+<div class="modal" id="messageModal">
+
+
+
+<div class="modal-content large">
+
+
+
+<div class="modal-header">
+
+
+
+<h2>
+
+
+<i class="fa-solid fa-envelope-open-text"></i>
+
+
+Message Details
+
+
+</h2>
+
+
+
+<span id="closeModal">
+
+&times;
+
+</span>
+
+
+
+</div>
+
+
+
+
+
+
+<div class="modal-body">
+
+
+
+
+
+<div class="details-grid">
+
+
+
+
+
+<div>
+
+<label>
+Sender
+</label>
+
+
+<p id="modalName"></p>
+
+
+</div>
+
+
+
+
+
+<div>
+
+<label>
+Email
+</label>
+
+
+<p id="modalEmail"></p>
+
+
+</div>
+
+
+
+
+
+<div>
+
+<label>
+Date Received
+</label>
+
+
+<p id="modalDate"></p>
+
+
+</div>
+
+
+
+
+
+<div>
+
+<label>
+Subject
+</label>
+
+
+<p id="modalSubject"></p>
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="notes">
+
+
+<h3>
+Message
+</h3>
+
+
+<p id="modalMessage"></p>
+
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="modal-footer">
+
+
+
+<button class="confirm-btn" id="replyMessage">
+
+
+<i class="fa-solid fa-reply"></i>
+
+
+Reply
+
+
+</button>
+
+
+
+
+
+<button class="delete-btn" id="deleteMessage">
+
+
+<i class="fa-solid fa-trash"></i>
+
+
+Delete
+
+
+</button>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<script src="js/admin.js"></script>
+<script src="js/messages.js"></script>
+
+
+</body>
+
+
+</html>

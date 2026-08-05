@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>EcoQuest Admin | Reviews</title>
+
+
+
+<link rel="stylesheet" href="css/dashboard.css">
+
+<link rel="stylesheet" href="css/reviews.css">
+
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+
+
+</head>
+
+
+
+<body>
+
+
+
+<div class="dashboard">
+
+
+
+
+
+<!-- ================= SIDEBAR ================= -->
+
+
+<aside class="sidebar">
+
+
+
+<div class="logo">
+
+
+<h2>
+
+<i class="fa-solid fa-leaf"></i>
+
+EcoQuest
+
+
+</h2>
+
+
+<span>
+Travel Admin
+</span>
+
+
+</div>
+
+
+
+
+
+<ul>
+
+
+
+
+<li onclick="location.href='dashboard.html'">
+
+
+<i class="fa-solid fa-chart-line"></i>
+
+
+Dashboard
+
+
+</li>
+
+
+
+
+
+
+<li onclick="location.href='bookings.html'">
+
+
+<i class="fa-solid fa-calendar-check"></i>
+
+
+Bookings
+
+
+</li>
+
+
+
+
+
+
+<li onclick="location.href='customers.html'">
+
+
+<i class="fa-solid fa-users"></i>
+
+
+Customers
+
+
+</li>
+
+<!--
+            <li onclick="location.href='destinations.html'">
+
+                <i class="fa-solid fa-location-dot"></i>
+
+                Destinations
+
+            </li>
+        -->
+
+
+<li onclick="location.href='messages.html'">
+
+
+<i class="fa-solid fa-envelope"></i>
+
+
+Messages
+
+
+</li>
+
+
+
+
+
+
+<li class="active">
+
+
+<i class="fa-solid fa-star"></i>
+
+
+Reviews
+
+
+</li>
+
+
+
+
+
+
+<li onclick="location.href='settings.html'">
+
+
+<i class="fa-solid fa-gear"></i>
+
+
+Settings
+
+
+</li>
+
+
+
+
+
+
+<li id="logout">
+
+
+<i class="fa-solid fa-right-from-bracket"></i>
+
+
+Logout
+
+
+</li>
+
+
+
+
+</ul>
+
+
+
+</aside>
+
+
+
+
+
+
+
+<!-- ================= MAIN CONTENT ================= -->
+
+
+
+<main class="main-content">
+
+
+
+
+
+
+<!-- TOPBAR -->
+
+
+<div class="topbar">
+
+
+
+<div>
+
+
+<h1>
+Reviews
+</h1>
+
+
+<p>
+Manage customer feedback and ratings
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="top-actions">
+
+
+
+<div class="search-box">
+
+
+<i class="fa-solid fa-search"></i>
+
+
+<input
+
+type="text"
+
+id="searchReview"
+
+placeholder="Search reviews...">
+
+
+</div>
+
+
+
+
+
+<button class="btn export">
+
+
+<i class="fa-solid fa-file-export"></i>
+
+
+Export
+
+
+</button>
+
+
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- ================= CARDS ================= -->
+
+
+
+<div class="cards">
+
+
+
+
+
+<div class="card">
+
+
+<h3>
+Total Reviews
+</h3>
+
+
+<h1 id="totalReviews">
+0
+</h1>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card confirmed">
+
+
+<h3>
+Average Rating
+</h3>
+
+
+<h1 id="averageRating">
+0.0
+</h1>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card pending">
+
+
+<h3>
+Pending Reviews
+</h3>
+
+
+<h1 id="pendingReviews">
+0
+</h1>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card confirmed">
+
+
+<h3>
+Approved Reviews
+</h3>
+
+
+<h1 id="approvedReviews">
+0
+</h1>
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ================= TABLE ================= -->
+
+
+
+<div class="table-section">
+
+
+
+
+
+<table>
+
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+#
+</th>
+
+
+<th>
+Customer
+</th>
+
+
+<th>
+Rating
+</th>
+
+
+<th>
+Comment
+</th>
+
+
+<th>
+Date
+</th>
+
+
+<th>
+Status
+</th>
+
+
+<th>
+Actions
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+
+<tbody id="reviewTable">
+
+
+
+<tr>
+
+
+<td colspan="7">
+
+
+<i class="fa-solid fa-spinner fa-spin"></i>
+
+
+Loading reviews...
+
+
+</td>
+
+
+</tr>
+
+
+
+</tbody>
+
+
+
+
+</table>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+</main>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ================= REVIEW MODAL ================= -->
+
+
+
+<div class="modal" id="reviewModal">
+
+
+
+
+
+<div class="modal-content large">
+
+
+
+
+
+<div class="modal-header">
+
+
+
+<h2>
+
+
+<i class="fa-solid fa-star"></i>
+
+
+Review Details
+
+
+</h2>
+
+
+
+
+<span id="closeModal">
+
+
+&times;
+
+
+</span>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="modal-body">
+
+
+
+
+
+
+<div class="details-grid">
+
+
+
+
+
+<div>
+
+
+<label>
+Customer
+</label>
+
+
+<p id="modalCustomer"></p>
+
+
+</div>
+
+
+
+
+
+
+<div>
+
+
+<label>
+Rating
+</label>
+
+
+<p id="modalRating"></p>
+
+
+</div>
+
+
+
+
+
+
+<div>
+
+
+<label>
+Date
+</label>
+
+
+<p id="modalDate"></p>
+
+
+</div>
+
+
+
+
+
+
+<div>
+
+
+<label>
+Status
+</label>
+
+
+<p id="modalStatus"></p>
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="notes">
+
+
+
+<h3>
+Comment
+</h3>
+
+
+
+<p id="modalComment"></p>
+
+
+
+</div>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="modal-footer">
+
+
+
+
+
+<button class="confirm-btn" id="approveReview">
+
+
+<i class="fa-solid fa-check"></i>
+
+
+Approve
+
+
+</button>
+
+
+
+
+
+
+
+<button class="cancel-btn" id="rejectReview">
+
+
+<i class="fa-solid fa-xmark"></i>
+
+
+Reject
+
+
+</button>
+
+
+
+
+
+
+
+<button class="delete-btn" id="deleteReview">
+
+
+<i class="fa-solid fa-trash"></i>
+
+
+Delete
+
+
+</button>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<script src="js/admin.js"></script>
+<script src="js/reviews.js"></script>
+
+
+
+</body>
+
+
+</html>

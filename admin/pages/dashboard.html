@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>EcoQuest Admin | Dashboard</title>
+
+<link rel="stylesheet" href="css/dashboard.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+
+<body>
+
+
+<div class="dashboard">
+
+
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar">
+
+
+<div class="logo">
+
+<h2>
+EcoQuest
+</h2>
+
+<span>
+Travel Admin
+</span>
+
+</div>
+
+
+
+
+<ul>
+
+
+
+<li class="active">
+
+<i class="fa-solid fa-chart-line"></i>
+
+Dashboard
+
+</li>
+
+
+
+
+<li onclick="location.href='bookings.html'">
+
+<i class="fa-solid fa-calendar-check"></i>
+
+Bookings
+
+</li>
+
+<!--
+            <li onclick="location.href='destinations.html'">
+
+                <i class="fa-solid fa-location-dot"></i>
+
+                Destinations
+
+            </li>
+        -->
+
+
+<li onclick="location.href='customers.html'">
+
+<i class="fa-solid fa-users"></i>
+
+Customers
+
+</li>
+
+
+<li onclick="location.href='messages.html'">
+
+<i class="fa-solid fa-envelope"></i>
+
+Messages
+
+</li>
+
+
+
+
+<li onclick="location.href='reviews.html'">
+
+<i class="fa-solid fa-star"></i>
+
+Reviews
+
+</li>
+
+
+
+
+<li onclick="location.href='settings.html'">
+
+<i class="fa-solid fa-gear"></i>
+
+Settings
+
+</li>
+
+
+
+
+<!-- LOGOUT BUTTON -->
+
+<li id="logoutBtn">
+
+<i class="fa-solid fa-right-from-bracket"></i>
+
+Logout
+
+</li>
+
+
+
+</ul>
+
+
+</aside>
+
+
+
+
+
+
+<!-- ================= MAIN CONTENT ================= -->
+
+
+<main class="main-content">
+
+
+
+<!-- TOP BAR -->
+
+<div class="topbar">
+
+
+<div>
+
+<h1>
+Dashboard
+</h1>
+
+
+<p>
+Welcome back to EcoQuest Admin Panel
+</p>
+
+
+</div>
+
+
+
+<div class="profile">
+
+<i class="fa-solid fa-circle-user"></i>
+
+<span id="adminName">
+
+</span>
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<!-- ================= CARDS ================= -->
+
+
+<div class="cards">
+
+
+
+<div class="card">
+
+<h3>
+Total Bookings
+</h3>
+
+<h1 id="totalBookings">
+0
+</h1>
+
+</div>
+
+
+
+
+
+<div class="card pending">
+
+<h3>
+Pending
+</h3>
+
+<h1 id="pendingBookings">
+0
+</h1>
+
+</div>
+
+
+
+
+
+<div class="card confirmed">
+
+<h3>
+Confirmed
+</h3>
+
+<h1 id="confirmedBookings">
+0
+</h1>
+
+</div>
+
+
+
+
+
+<div class="card cancelled">
+
+<h3>
+Cancelled
+</h3>
+
+<h1 id="cancelledBookings">
+0
+</h1>
+
+</div>
+
+
+
+
+
+<div class="card">
+
+<h3>
+Total Messages
+</h3>
+
+<h1 id="totalMessages">
+0
+</h1>
+
+</div>
+
+
+
+
+
+<div class="card">
+
+<h3>
+Total Reviews
+</h3>
+
+<h1 id="totalReviews">
+0
+</h1>
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<!-- ================= CHART ================= -->
+
+
+<div class="chart-box">
+
+
+<h2>
+Booking Statistics
+</h2>
+
+
+<canvas id="bookingChart"></canvas>
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- ================= RECENT BOOKINGS ================= -->
+
+
+<div class="table-section">
+
+
+<h2>
+Recent Bookings
+</h2>
+
+
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+<th>
+Name
+</th>
+
+<th>
+Destination
+</th>
+
+<th>
+Travel Date
+</th>
+
+<th>
+Status
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+
+<tbody id="bookingTable">
+
+
+<tr>
+
+
+<td colspan="4" style="text-align:center">
+
+
+Loading...
+
+
+</td>
+
+
+</tr>
+
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- COMMON ADMIN JS -->
+
+<script src="js/admin.js"></script>
+
+
+<!-- DASHBOARD JS -->
+
+<script src="js/dashboard.js"></script>
+
+
+
+</body>
+
+</html>
