@@ -22,9 +22,7 @@ const app = express();
 
 app.use(
     cors({
-        origin: [
-            "https://suleiman27.github.io"
-        ],
+        origin: ["https://suleiman27.github.io"],
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         credentials: true
     })
@@ -58,7 +56,7 @@ app.use("/api/settings", settingsRoutes);
 app.get("/", (req, res) => {
     res.status(200).json({
         success: true,
-        message: "🚀 EcoQuest Backend API is running."
+        message: "EcoQuest Backend API is running."
     });
 });
 
@@ -78,7 +76,7 @@ app.use((req, res) => {
 // ===============================
 
 app.use((err, req, res, next) => {
-    console.error("❌ Server Error:", err);
+    console.error("Server Error:", err);
 
     res.status(err.status || 500).json({
         success: false,
@@ -93,6 +91,6 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-    console.log(`🚀 EcoQuest Backend running on port ${PORT}`);
+    console.log(`EcoQuest Backend running on port ${PORT}`);
 });
 ```
