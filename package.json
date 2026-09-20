@@ -1,11 +1,13 @@
+```json
 {
-  "name": "beka",
+  "name": "ecoquest-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "EcoQuest Safaris Backend API",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "build": "npx prisma generate"
   },
   "keywords": [],
   "author": "",
@@ -27,3 +29,4 @@
     "nodemon": "^3.1.14"
   }
 }
+```
