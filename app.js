@@ -3,6 +3,7 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 
 const bookingRoutes = require("./routes/bookingRoutes");
 const contactRoutes = require("./routes/contactRoutes");
@@ -36,7 +37,31 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // ===============================
-// API Routes
+// ADMIN FRONTEND
+// ===============================
+// Admin pages are stored inside this backend repository:
+//
+// admin/
+// ├── pages/
+// │   ├── login.html
+// │   ├── dashboard.html
+// │   ├── bookings.html
+// │   ├── customers.html
+// │   ├── destinations.html
+// │   ├── messages.html
+// │   ├── reviews.html
+// │   └── settings.html
+//
+// They will be available through:
+// https://your-render-url.onrender.com/admin/pages/login.html
+
+app.use(
+    "/admin",
+    express.static(path.join(__dirname, "admin"))
+);
+
+// ===============================
+// API ROUTES
 // ===============================
 
 app.use("/api/bookings", bookingRoutes);
@@ -50,7 +75,7 @@ app.use("/api/destinations", destinationRoutes);
 app.use("/api/settings", settingsRoutes);
 
 // ===============================
-// Home Route
+// HOME ROUTE
 // ===============================
 
 app.get("/", (req, res) => {
@@ -61,7 +86,7 @@ app.get("/", (req, res) => {
 });
 
 // ===============================
-// 404 Route
+// 404 ROUTE
 // ===============================
 
 app.use((req, res) => {
@@ -72,7 +97,7 @@ app.use((req, res) => {
 });
 
 // ===============================
-// Global Error Handler
+// GLOBAL ERROR HANDLER
 // ===============================
 
 app.use((err, req, res, next) => {
@@ -85,7 +110,7 @@ app.use((err, req, res, next) => {
 });
 
 // ===============================
-// Start Server
+// START SERVER
 // ===============================
 
 const PORT = process.env.PORT || 5000;
