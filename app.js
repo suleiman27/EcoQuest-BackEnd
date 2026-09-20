@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 
 const bookingRoutes = require("./routes/bookingRoutes");
 const contactRoutes = require("./routes/contactRoutes");
@@ -29,6 +30,24 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// ===============================
+// ADMIN DASHBOARD
+// ===============================
+// Serves:
+// /admin/pages/login.html
+// /admin/pages/dashboard.html
+// /admin/pages/bookings.html
+// /admin/pages/customers.html
+// /admin/pages/destinations.html
+// /admin/pages/messages.html
+// /admin/pages/reviews.html
+// /admin/pages/settings.html
+
+app.use(
+    "/admin",
+    express.static(path.join(__dirname, "..", "admin"))
+);
 
 // ===============================
 // API Routes
