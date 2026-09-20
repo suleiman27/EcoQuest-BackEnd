@@ -1,6 +1,6 @@
 
 // ===============================
-// Java Script
+// Clear Old Login Data
 // ===============================
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 // ===============================
-// Login Form
+// Login
 // ===============================
 
 const loginForm = document.getElementById("loginForm");
@@ -42,10 +42,7 @@ if (loginForm) {
 
         try {
 
-            // ===============================
-            // Login to Current Backend
-            // ===============================
-
+            // Current backend
             const response = await fetch("/api/auth/login", {
 
                 method: "POST",
@@ -55,22 +52,18 @@ if (loginForm) {
                 },
 
                 body: JSON.stringify({
-                    email,
-                    password
+                    email: email,
+                    password: password
                 })
 
             });
 
 
-            // ===============================
-            // Read Response
-            // ===============================
-
             const data = await response.json();
 
 
             // ===============================
-            // Handle Login Error
+            // Login Failed
             // ===============================
 
             if (!response.ok) {
@@ -83,7 +76,7 @@ if (loginForm) {
 
 
             // ===============================
-            // Save JWT Token
+            // Save JWT
             // ===============================
 
             localStorage.setItem(
@@ -103,7 +96,6 @@ if (loginForm) {
                     JSON.stringify(data.admin)
                 );
 
-                // Save username separately
                 if (data.admin.username) {
 
                     localStorage.setItem(
@@ -117,7 +109,7 @@ if (loginForm) {
 
 
             // ===============================
-            // Redirect to Dashboard
+            // Go To Dashboard
             // ===============================
 
             window.location.href = "dashboard.html";
@@ -125,10 +117,7 @@ if (loginForm) {
 
         } catch (error) {
 
-            console.error(
-                "Login Error:",
-                error
-            );
+            console.error("Login Error:", error);
 
             message.style.color = "red";
 
