@@ -1,5 +1,6 @@
+
 // ===============================
-// Clear Old Login Data
+// Java Script
 // ===============================
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -19,65 +20,125 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 // ===============================
-// Backend URL
-// ===============================
-
-const API_URL = "https://ecoquest-1-dq9u.onrender.com";
-
-
-// ===============================
-// Login
+// Login Form
 // ===============================
 
 const loginForm = document.getElementById("loginForm");
 
-loginForm.addEventListener("submit", async (e) => {
+if (loginForm) {
 
-    e.preventDefault();
+    loginForm.addEventListener("submit", async (e) => {
 
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
+        e.preventDefault();
 
-    const message = document.getElementById("message");
-    message.textContent = "";
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
 
-    try {
+        const message = document.getElementById("message");
 
-        const response = await fetch(`${API_URL}/api/auth/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email,
-                password
-            })
-        });
+        message.textContent = "";
+        message.style.color = "";
 
-        const data = await response.json();
 
-        if (!response.ok) {
-            throw new Error(data.message || "Login failed");
+        try {
+
+            // ===============================
+            // Login to Current Backend
+            // ===============================
+
+            const response = await fetch("/api/auth/login", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    email,
+                    password
+                })
+
+            });
+
+
+            // ===============================
+            // Read Response
+            // ===============================
+
+            const data = await response.json();
+
+
+            // ===============================
+            // Handle Login Error
+            // ===============================
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message || "Login failed"
+                );
+
+            }
+
+
+            // ===============================
+            // Save JWT Token
+            // ===============================
+
+            localStorage.setItem(
+                "token",
+                data.token
+            );
+
+
+            // ===============================
+            // Save Admin Information
+            // ===============================
+
+            if (data.admin) {
+
+                localStorage.setItem(
+                    "admin",
+                    JSON.stringify(data.admin)
+                );
+
+                // Save username separately
+                if (data.admin.username) {
+
+                    localStorage.setItem(
+                        "adminName",
+                        data.admin.username
+                    );
+
+                }
+
+            }
+
+
+            // ===============================
+            // Redirect to Dashboard
+            // ===============================
+
+            window.location.href = "dashboard.html";
+
+
+        } catch (error) {
+
+            console.error(
+                "Login Error:",
+                error
+            );
+
+            message.style.color = "red";
+
+            message.textContent =
+                error.message ||
+                "Failed to connect to server.";
+
         }
 
-        // Save JWT token
-        localStorage.setItem("token", data.token);
+    });
 
-        // Save admin info
-        if (data.admin) {
-            localStorage.setItem("admin", JSON.stringify(data.admin));
-        }
+}
 
-        // Redirect
-        window.location.href = "dashboard.html";
-
-    } catch (error) {
-
-        console.error("Login Error:", error);
-
-        message.style.color = "red";
-        message.textContent = error.message || "Failed to connect to server.";
-
-    }
-
-});
