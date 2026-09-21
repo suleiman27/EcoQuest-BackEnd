@@ -6,7 +6,7 @@
 // CONFIGURATION
 // ==========================================
 
-const API = "http://localhost:5000/api/customers";
+const API = "https://ecoquest-backend-r4d4.onrender.com/api/customers";
 
 const token = localStorage.getItem("token");
 
