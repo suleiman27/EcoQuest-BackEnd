@@ -2,7 +2,7 @@
 // ECOQUEST BOOKINGS
 // =======================================
 
-const API = "http://localhost:5000/api/bookings";
+const API = "https://ecoquest-backend-r4d4.onrender.com/api/bookings";
 
 const token = localStorage.getItem("token");
 
@@ -13,6 +13,7 @@ if (!token) {
 let bookings = [];
 let currentBooking = null;
 
+
 // =======================================
 // Load Bookings
 // =======================================
@@ -21,17 +22,24 @@ async function loadBookings() {
 
     try {
 
+        console.log("Loading bookings from:", API);
+
         const response = await fetch(API, {
+            method: "GET",
             headers: {
-                Authorization: `Bearer ${token}`
+                "Authorization": `Bearer ${token}`
             }
         });
 
+        console.log("Bookings HTTP Status:", response.status);
+
         if (!response.ok) {
-            throw new Error("Failed to load bookings");
+            throw new Error(`Failed to load bookings: ${response.status}`);
         }
 
         bookings = await response.json();
+
+        console.log("Bookings loaded:", bookings);
 
         updateCards();
 
@@ -39,11 +47,24 @@ async function loadBookings() {
 
     } catch (err) {
 
-        console.error(err);
+        console.error("Bookings Error:", err);
+
+        const table = document.getElementById("bookingTable");
+
+        if (table) {
+            table.innerHTML = `
+                <tr>
+                    <td colspan="6">
+                        Unable to load bookings.
+                    </td>
+                </tr>
+            `;
+        }
 
     }
 
 }
+
 
 // =======================================
 // Statistics
@@ -65,6 +86,7 @@ function updateCards() {
 
 }
 
+
 // =======================================
 // Render Table
 // =======================================
@@ -73,71 +95,80 @@ function renderTable(data) {
 
     const table = document.getElementById("bookingTable");
 
+    if (!table) {
+        console.error("bookingTable element not found.");
+        return;
+    }
+
     table.innerHTML = "";
 
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
 
         table.innerHTML = `
-
-        <tr>
-
-            <td colspan="6">
-
-                No bookings found
-
-            </td>
-
-        </tr>
-
+            <tr>
+                <td colspan="6">
+                    No bookings found
+                </td>
+            </tr>
         `;
 
         return;
-
     }
 
     data.forEach(booking => {
 
         table.innerHTML += `
+            <tr>
 
-        <tr>
+                <td>
+                    ${booking.fullName || "N/A"}
+                </td>
 
-            <td>${booking.fullName}</td>
+                <td>
+                    ${booking.destination || "N/A"}
+                </td>
 
-            <td>${booking.destination}</td>
+                <td>
+                    ${
+                        booking.travelDate
+                            ? new Date(booking.travelDate).toLocaleDateString()
+                            : "N/A"
+                    }
+                </td>
 
-            <td>${new Date(booking.travelDate).toLocaleDateString()}</td>
+                <td>
+                    ${booking.travellers || 0}
+                </td>
 
-            <td>${booking.travellers}</td>
+                <td>
 
-            <td>
+                    <span class="badge ${String(booking.status || "").toLowerCase()}">
 
-                <span class="badge ${booking.status.toLowerCase()}">
+                        ${booking.status || "UNKNOWN"}
 
-                    ${booking.status}
+                    </span>
 
-                </span>
+                </td>
 
-            </td>
+                <td>
 
-            <td>
+                    <button
+                        class="view"
+                        onclick="openBooking(${booking.id})">
 
-                <button
-                    class="view"
-                    onclick="openBooking(${booking.id})">
+                        <i class="fa-solid fa-eye"></i>
 
-                    <i class="fa-solid fa-eye"></i>
+                    </button>
 
-                </button>
+                </td>
 
-            </td>
-
-        </tr>
-
+            </tr>
         `;
 
     });
 
 }
+
 
 // =======================================
 // Search
@@ -147,19 +178,24 @@ document.getElementById("searchBooking").addEventListener("keyup", function () {
 
     const value = this.value.toLowerCase();
 
-    const filtered = bookings.filter(b =>
+    const filtered = bookings.filter(b => {
 
-        b.fullName.toLowerCase().includes(value) ||
+        const name = String(b.fullName || "").toLowerCase();
+        const destination = String(b.destination || "").toLowerCase();
+        const email = String(b.email || "").toLowerCase();
 
-        b.destination.toLowerCase().includes(value) ||
+        return (
+            name.includes(value) ||
+            destination.includes(value) ||
+            email.includes(value)
+        );
 
-        b.email.toLowerCase().includes(value)
-
-    );
+    });
 
     renderTable(filtered);
 
 });
+
 
 // =======================================
 // Filter
@@ -172,20 +208,16 @@ document.getElementById("statusFilter").addEventListener("change", function () {
         renderTable(bookings);
 
         return;
-
     }
 
-    renderTable(
-
-        bookings.filter(
-
-            booking => booking.status === this.value
-
-        )
-
+    const filtered = bookings.filter(
+        booking => booking.status === this.value
     );
 
+    renderTable(filtered);
+
 });
+
 
 // =======================================
 // Open Booking
@@ -194,39 +226,42 @@ document.getElementById("statusFilter").addEventListener("change", function () {
 function openBooking(id) {
 
     currentBooking = bookings.find(
-
         booking => booking.id === id
-
     );
 
-    if (!currentBooking) return;
+    if (!currentBooking) {
+        console.error("Booking not found:", id);
+        return;
+    }
 
     document.getElementById("mName").textContent =
-        currentBooking.fullName;
+        currentBooking.fullName || "N/A";
 
     document.getElementById("mEmail").textContent =
-        currentBooking.email;
+        currentBooking.email || "N/A";
 
     document.getElementById("mPhone").textContent =
-        currentBooking.phone;
+        currentBooking.phone || "N/A";
 
     document.getElementById("mDestination").textContent =
-        currentBooking.destination;
+        currentBooking.destination || "N/A";
 
     document.getElementById("mTravelDate").textContent =
-        new Date(currentBooking.travelDate).toLocaleDateString();
+        currentBooking.travelDate
+            ? new Date(currentBooking.travelDate).toLocaleDateString()
+            : "N/A";
 
     document.getElementById("mTravellers").textContent =
-        currentBooking.travellers;
+        currentBooking.travellers || 0;
 
     document.getElementById("mBudget").textContent =
-        currentBooking.budget;
+        currentBooking.budget || "N/A";
 
     document.getElementById("mCitizenship").textContent =
-        currentBooking.citizenship;
+        currentBooking.citizenship || "N/A";
 
     document.getElementById("mStatus").textContent =
-        currentBooking.status;
+        currentBooking.status || "N/A";
 
     document.getElementById("mNotes").textContent =
         currentBooking.notes || "No notes";
@@ -235,6 +270,7 @@ function openBooking(id) {
         "flex";
 
 }
+
 
 // =======================================
 // Close Modal
@@ -247,9 +283,13 @@ document.getElementById("closeModal").onclick = () => {
 
 };
 
+
 window.onclick = function (e) {
 
-    if (e.target === document.getElementById("bookingModal")) {
+    if (
+        e.target ===
+        document.getElementById("bookingModal")
+    ) {
 
         document.getElementById("bookingModal").style.display =
             "none";
@@ -257,6 +297,7 @@ window.onclick = function (e) {
     }
 
 };
+
 
 // =======================================
 // Confirm Booking
@@ -269,48 +310,40 @@ document.getElementById("confirmBooking").onclick = async () => {
     try {
 
         const response = await fetch(
-
             `${API}/${currentBooking.id}`,
-
             {
-
                 method: "PUT",
 
                 headers: {
-
                     "Content-Type": "application/json",
-
-                    Authorization: `Bearer ${token}`
-
+                    "Authorization": `Bearer ${token}`
                 },
 
                 body: JSON.stringify({
-
                     status: "CONFIRMED"
-
                 })
-
             }
-
         );
 
-        if (!response.ok)
-            throw new Error();
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
 
         document.getElementById("bookingModal").style.display =
             "none";
 
-        loadBookings();
+        await loadBookings();
 
-    }
+    } catch (error) {
 
-    catch {
+        console.error(error);
 
         alert("Unable to confirm booking.");
 
     }
 
 };
+
 
 // =======================================
 // Cancel Booking
@@ -323,48 +356,40 @@ document.getElementById("cancelBooking").onclick = async () => {
     try {
 
         const response = await fetch(
-
             `${API}/${currentBooking.id}`,
-
             {
-
                 method: "PUT",
 
                 headers: {
-
                     "Content-Type": "application/json",
-
-                    Authorization: `Bearer ${token}`
-
+                    "Authorization": `Bearer ${token}`
                 },
 
                 body: JSON.stringify({
-
                     status: "CANCELLED"
-
                 })
-
             }
-
         );
 
-        if (!response.ok)
-            throw new Error();
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
 
         document.getElementById("bookingModal").style.display =
             "none";
 
-        loadBookings();
+        await loadBookings();
 
-    }
+    } catch (error) {
 
-    catch {
+        console.error(error);
 
         alert("Unable to cancel booking.");
 
     }
 
 };
+
 
 // =======================================
 // Delete Booking
@@ -374,40 +399,35 @@ document.getElementById("deleteBooking").onclick = async () => {
 
     if (!currentBooking) return;
 
-    if (!confirm("Delete this booking permanently?"))
+    if (!confirm("Delete this booking permanently?")) {
         return;
+    }
 
     try {
 
         const response = await fetch(
-
             `${API}/${currentBooking.id}`,
-
             {
-
                 method: "DELETE",
 
                 headers: {
-
-                    Authorization: `Bearer ${token}`
-
+                    "Authorization": `Bearer ${token}`
                 }
-
             }
-
         );
 
-        if (!response.ok)
-            throw new Error();
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
 
         document.getElementById("bookingModal").style.display =
             "none";
 
-        loadBookings();
+        await loadBookings();
 
-    }
+    } catch (error) {
 
-    catch {
+        console.error(error);
 
         alert("Unable to delete booking.");
 
@@ -415,11 +435,15 @@ document.getElementById("deleteBooking").onclick = async () => {
 
 };
 
+
 // =======================================
 // Export Bookings (CSV)
 // =======================================
 
-document.querySelector(".export").addEventListener("click", exportBookings);
+document
+    .querySelector(".export")
+    .addEventListener("click", exportBookings);
+
 
 function exportBookings() {
 
@@ -428,22 +452,31 @@ function exportBookings() {
         alert("No bookings to export.");
 
         return;
-
     }
 
-    let csv = "Name,Email,Phone,Destination,Travel Date,Travellers,Budget,Status\n";
+    let csv =
+        "Name,Email,Phone,Destination,Travel Date,Travellers,Budget,Status\n";
 
     bookings.forEach(b => {
 
-        csv += `"${b.fullName}","${b.email}","${b.phone}","${b.destination}","${new Date(b.travelDate).toLocaleDateString()}","${b.travellers}","${b.budget}","${b.status}"\n`;
+        csv +=
+            `"${b.fullName || ""}",` +
+            `"${b.email || ""}",` +
+            `"${b.phone || ""}",` +
+            `"${b.destination || ""}",` +
+            `"${b.travelDate ? new Date(b.travelDate).toLocaleDateString() : ""}",` +
+            `"${b.travellers || ""}",` +
+            `"${b.budget || ""}",` +
+            `"${b.status || ""}"\n`;
 
     });
 
-    const blob = new Blob([csv], {
-
-        type: "text/csv;charset=utf-8;"
-
-    });
+    const blob = new Blob(
+        [csv],
+        {
+            type: "text/csv;charset=utf-8;"
+        }
+    );
 
     const url = URL.createObjectURL(blob);
 
@@ -459,7 +492,11 @@ function exportBookings() {
 
     document.body.removeChild(link);
 
+    URL.revokeObjectURL(url);
+
 }
+
+
 // =======================================
 // Logout
 // =======================================
@@ -472,11 +509,16 @@ if (logoutBtn) {
 
         localStorage.removeItem("token");
 
+        localStorage.removeItem("admin");
+
+        localStorage.removeItem("adminName");
+
         window.location.href = "login.html";
 
     };
 
 }
+
 
 // =======================================
 // Start
