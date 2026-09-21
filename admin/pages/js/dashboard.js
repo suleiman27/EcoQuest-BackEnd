@@ -1,3 +1,4 @@
+
 // =========================
 // Protect Dashboard
 // =========================
@@ -19,111 +20,70 @@ async function loadDashboard() {
 
     try {
 
-
         // =========================
-        // Fetch Bookings
+        // Fetch Dashboard Statistics
         // =========================
 
-    const bookingResponse = await fetch("https://ecoquest-1-12jk.onrender.com/api/bookings", {
-    headers: {
-        Authorization: `Bearer ${token}`
-    }
-});
-
-            headers: {
-
-                Authorization: `Bearer ${token}`
-
+        const dashboardResponse = await fetch(
+            "https://ecoquest-backend-r4d4.onrender.com/api/dashboard/stats",
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
             }
+        );
 
-        });
+
+        // =========================
+        // Authentication Check
+        // =========================
+
+        if (dashboardResponse.status === 401) {
+
+            localStorage.clear();
+            sessionStorage.clear();
+
+            window.location.href = "login.html";
+
+            return;
+        }
 
 
-        if (!bookingResponse.ok) {
+        if (!dashboardResponse.ok) {
 
-            throw new Error("Failed to fetch bookings");
+            throw new Error(
+                `Dashboard request failed: ${dashboardResponse.status}`
+            );
 
         }
 
 
-        const bookings = await bookingResponse.json();
+        const dashboardData = await dashboardResponse.json();
 
 
-
-
-
-        // =========================
-        // Fetch Messages
-        // =========================
-
-        const messageResponse = await fetch("https://ecoquest-1-12jk.onrender.com/api/messages", {
-
-            headers: {
-
-                Authorization: `Bearer ${token}`
-
-            }
-
-        });
-
-
-        let messages = [];
-
-
-        if(messageResponse.ok){
-
-            messages = await messageResponse.json();
-
-        }
-
-
-
-
-
-
-
-        // =========================
-        // Fetch Reviews
-        // =========================
-
-        const reviewResponse = await fetch("https://ecoquest-1-12jk.onrender.com/api/reviews");
-
-
-        let reviews = [];
-
-
-        if(reviewResponse.ok){
-
-            reviews = await reviewResponse.json();
-
-        }
-
-
-
-
-
+        console.log("Dashboard Data:", dashboardData);
 
 
         // =========================
         // Statistics
         // =========================
 
+        const total = dashboardData.total || 0;
 
-        const pending =
-        bookings.filter(b => b.status === "PENDING").length;
+        const pending = dashboardData.pending || 0;
 
+        const confirmed = dashboardData.confirmed || 0;
 
-        const confirmed =
-        bookings.filter(b => b.status === "CONFIRMED").length;
-
-
-        const cancelled =
-        bookings.filter(b => b.status === "CANCELLED").length;
+        const cancelled = dashboardData.cancelled || 0;
 
 
+        // =========================
+        // Update Dashboard Cards
+        // =========================
 
-
-        document.getElementById("totalBookings").textContent = bookings.length;
+        document.getElementById("totalBookings").textContent = total;
 
         document.getElementById("pendingBookings").textContent = pending;
 
@@ -132,263 +92,168 @@ async function loadDashboard() {
         document.getElementById("cancelledBookings").textContent = cancelled;
 
 
-
-
-
-        const totalMessages = document.getElementById("totalMessages");
-
-        if(totalMessages){
-
-            totalMessages.textContent = messages.length;
-
-        }
-
-
-
-
-        const totalReviews = document.getElementById("totalReviews");
-
-        if(totalReviews){
-
-            totalReviews.textContent = reviews.length;
-
-        }
-
-
-
-
-
-
-
-
-
         // =========================
-        // Recent Bookings Table
+        // Recent Bookings
         // =========================
 
+        const bookings = dashboardData.recentBookings || [];
 
         const table = document.getElementById("bookingTable");
-
 
         table.innerHTML = "";
 
 
-
-        if(bookings.length === 0){
-
+        if (bookings.length === 0) {
 
             table.innerHTML = `
-
-            <tr>
-
-            <td colspan="4" style="text-align:center">
-
-            No bookings available.
-
-            </td>
-
-            </tr>
-
+                <tr>
+                    <td colspan="4" style="text-align:center">
+                        No bookings available.
+                    </td>
+                </tr>
             `;
 
+        } else {
 
-        }else{
+            bookings.forEach(b => {
 
-
-            bookings
-
-            .sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt))
-
-            .slice(0,10)
-
-            .forEach(b=>{
+                const travelDate = b.travelDate
+                    ? new Date(b.travelDate).toLocaleDateString()
+                    : "N/A";
 
 
                 table.innerHTML += `
+                    <tr>
 
-                <tr>
+                        <td>
+                            ${b.fullName || "N/A"}
+                        </td>
 
-                <td>${b.fullName}</td>
+                        <td>
+                            ${b.destination || "N/A"}
+                        </td>
 
-                <td>${b.destination}</td>
+                        <td>
+                            ${travelDate}
+                        </td>
 
-                <td>${new Date(b.travelDate).toLocaleDateString()}</td>
+                        <td>
 
-                <td>
+                            <span class="status ${String(
+                                b.status || ""
+                            ).toLowerCase()}">
 
-                <span class="status ${b.status.toLowerCase()}">
+                                ${b.status || "N/A"}
 
-                ${b.status}
+                            </span>
 
-                </span>
+                        </td>
 
-                </td>
-
-
-                </tr>
-
+                    </tr>
                 `;
-
 
             });
 
-
         }
-
-
-
-
-
-
-
 
 
         // =========================
         // Booking Chart
         // =========================
 
-
-        if(bookingChart){
+        if (bookingChart) {
 
             bookingChart.destroy();
 
         }
 
 
-
-
         bookingChart = new Chart(
+            document.getElementById("bookingChart"),
+            {
 
-        document.getElementById("bookingChart"),{
+                type: "bar",
 
+                data: {
 
-            type:"bar",
+                    labels: [
+                        "Pending",
+                        "Confirmed",
+                        "Cancelled"
+                    ],
 
+                    datasets: [
+                        {
 
-            data:{
+                            label: "Bookings",
 
+                            data: [
+                                pending,
+                                confirmed,
+                                cancelled
+                            ]
 
-                labels:[
-
-                    "Pending",
-
-                    "Confirmed",
-
-                    "Cancelled"
-
-                ],
-
-
-                datasets:[{
-
-
-                    label:"Bookings",
-
-
-                    data:[
-
-                        pending,
-
-                        confirmed,
-
-                        cancelled
-
+                        }
                     ]
 
+                },
 
-                }]
+                options: {
 
+                    responsive: true,
 
-            },
+                    maintainAspectRatio: true,
 
+                    aspectRatio: 2.5,
 
-            options:{
+                    plugins: {
 
-
-                responsive:true,
-
-
-                maintainAspectRatio:true,
-
-
-                aspectRatio:2.5,
-
-
-                plugins:{
-
-
-                    legend:{
-
-
-                        display:true
-
+                        legend: {
+                            display: true
+                        }
 
                     }
 
-
                 }
 
-
             }
-
-
-        });
-
-
-    }
-
-
-
-    catch(error){
-
-
-        console.error("Dashboard Error:",error);
-
-
-        alert(
-        "Unable to load dashboard data. Please check your server and log in again."
         );
 
 
-    }
+    } catch (error) {
 
+        console.error("Dashboard Error:", error);
+
+        alert(
+            "Unable to load dashboard data. Please check your server and log in again."
+        );
+
+    }
 
 }
 
 
-
-
-
+// =========================
 // Load Dashboard
+// =========================
 
 loadDashboard();
-
-
-
-
 
 
 // ===============================
 // LOGOUT
 // ===============================
 
-
-document.addEventListener("DOMContentLoaded",()=>{
-
+document.addEventListener("DOMContentLoaded", () => {
 
     const logoutBtn = document.getElementById("logoutBtn");
 
 
+    if (logoutBtn) {
 
-    if(logoutBtn){
-
-
-
-        logoutBtn.addEventListener("click",(e)=>{
-
+        logoutBtn.addEventListener("click", (e) => {
 
             e.preventDefault();
-
 
 
             // Remove login session
@@ -398,19 +263,12 @@ document.addEventListener("DOMContentLoaded",()=>{
             sessionStorage.clear();
 
 
-
             // Return to login page
 
             window.location.replace("login.html");
 
-
-
         });
 
-
-
     }
-
-
 
 });
