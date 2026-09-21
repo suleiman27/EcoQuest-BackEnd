@@ -7,26 +7,27 @@
 // CONFIGURATION
 // ===============================
 
+const API_BASE =
+    "https://ecoquest-backend-r4d4.onrender.com/api/reviews";
+
 const API_URL =
-"http://localhost:5000/api/reviews/admin/all";
+    `${API_BASE}/admin/all`;
 
 
 let reviews = [];
-
-
 
 
 // ===============================
 // AUTH CHECK
 // ===============================
 
-function checkAuth(){
+function checkAuth() {
 
     const token = localStorage.getItem("token");
 
-    if(!token){
+    if (!token) {
 
-        window.location.href="login.html";
+        window.location.href = "login.html";
 
     }
 
@@ -35,52 +36,47 @@ function checkAuth(){
 checkAuth();
 
 
-
-
-
 // ===============================
 // AUTH HEADERS
 // ===============================
 
-function authHeaders(){
+function authHeaders() {
 
     return {
 
-        "Content-Type":"application/json",
+        "Content-Type": "application/json",
 
         "Authorization":
-        `Bearer ${localStorage.getItem("token")}`
+            `Bearer ${localStorage.getItem("token")}`
 
     };
 
 }
 
 
-
-
-
-
 // ===============================
 // LOAD REVIEWS
 // ===============================
 
-async function loadReviews(){
+async function loadReviews() {
 
+    try {
 
-    try{
+        console.log("Loading reviews from:", API_URL);
 
+        const response = await fetch(API_URL, {
 
-        const response = await fetch(API_URL,{
+            method: "GET",
 
-            method:"GET",
-
-            headers:authHeaders()
+            headers: authHeaders()
 
         });
 
 
+        console.log("Reviews HTTP status:", response.status);
 
-        if(response.status === 401){
+
+        if (response.status === 401) {
 
             logout();
 
@@ -89,87 +85,68 @@ async function loadReviews(){
         }
 
 
-
-        if(!response.ok){
+        if (!response.ok) {
 
             throw new Error(
-                "Unable to fetch reviews"
+                `Unable to fetch reviews. Status: ${response.status}`
             );
 
         }
 
 
-
         reviews = await response.json();
 
+
+        console.log("Reviews loaded:", reviews);
 
 
         displayReviews(reviews);
 
-
         updateStatistics(reviews);
 
 
-
     }
 
+    catch (error) {
 
-    catch(error){
-
-
-        console.error(error);
-
+        console.error("Reviews error:", error);
 
         showEmptyState();
 
-
     }
 
-
 }
-
-
-
-
-
-
-
 
 
 // ===============================
 // DISPLAY REVIEWS
 // ===============================
 
-function displayReviews(data){
-
+function displayReviews(data) {
 
     const table =
-    document.getElementById("reviewTable");
+        document.getElementById("reviewTable");
 
 
-
-    if(!table) return;
-
+    if (!table) return;
 
 
-    table.innerHTML="";
+    table.innerHTML = "";
 
 
+    if (data.length === 0) {
 
-    if(data.length===0){
+        table.innerHTML = `
 
+            <tr>
 
-        table.innerHTML=`
+                <td colspan="7">
 
-        <tr>
+                    No reviews found.
 
-            <td colspan="7">
+                </td>
 
-                No reviews found.
-
-            </td>
-
-        </tr>
+            </tr>
 
         `;
 
@@ -178,248 +155,195 @@ function displayReviews(data){
     }
 
 
+    data.forEach((review, index) => {
+
+        let stars = "";
 
 
+        for (let i = 0; i < review.rating; i++) {
 
-    data.forEach((review,index)=>{
-
-
-        let stars="";
-
-
-        for(let i=0;i<review.rating;i++){
-
-            stars+="⭐";
+            stars += "⭐";
 
         }
 
 
-
-
-
         table.innerHTML += `
 
+            <tr>
 
-        <tr>
+                <td>
 
+                    ${index + 1}
 
-            <td>
+                </td>
 
-                ${index+1}
 
-            </td>
+                <td>
 
+                    ${review.name || "N/A"}
 
+                </td>
 
-            <td>
 
-                ${review.name}
+                <td class="rating">
 
-            </td>
+                    ${stars}
 
+                </td>
 
 
-            <td class="rating">
+                <td>
 
-                ${stars}
+                    ${review.comment || ""}
 
-            </td>
+                </td>
 
 
+                <td>
 
-            <td>
+                    ${formatDate(review.createdAt)}
 
-                ${review.comment}
+                </td>
 
-            </td>
 
+                <td>
 
+                    <span class="status
+                    ${review.approved ? "approved" : "pending"}">
 
-            <td>
+                        ${review.approved
+                            ? "Approved"
+                            : "Pending"}
 
-                ${formatDate(review.createdAt)}
+                    </span>
 
-            </td>
+                </td>
 
 
+                <td>
 
+                    <button
 
-            <td>
+                        class="action-btn view"
 
+                        onclick="viewReview(${review.id})">
 
-                <span class="status 
-                ${review.approved ? "approved":"pending"}">
+                        View
 
+                    </button>
 
-                ${review.approved ? 
-                "Approved":"Pending"}
 
+                    ${
+                        !review.approved
+                            ? `
 
-                </span>
+                            <button
 
+                                class="action-btn approve"
 
-            </td>
+                                onclick="approveReview(${review.id})">
 
+                                Approve
 
+                            </button>
 
+                            `
+                            : ""
+                    }
 
-            <td>
 
+                    <button
 
-                <button
+                        class="action-btn delete"
 
-                class="action-btn view"
+                        onclick="deleteReview(${review.id})">
 
-                onclick="viewReview(${review.id})">
+                        Delete
 
-                View
+                    </button>
 
-                </button>
+                </td>
 
-
-
-
-
-                ${!review.approved ? `
-
-
-                <button
-
-                class="action-btn approve"
-
-                onclick="approveReview(${review.id})">
-
-                Approve
-
-                </button>
-
-
-                `:""}
-
-
-
-
-
-                <button
-
-                class="action-btn delete"
-
-                onclick="deleteReview(${review.id})">
-
-                Delete
-
-                </button>
-
-
-
-            </td>
-
-
-
-        </tr>
-
+            </tr>
 
         `;
 
-
-
     });
 
-
-
 }
-
-
-
-
-
-
-
 
 
 // ===============================
 // STATISTICS
 // ===============================
 
-function updateStatistics(data){
-
-
+function updateStatistics(data) {
 
     const total =
-    document.getElementById("totalReviews");
+        document.getElementById("totalReviews");
 
 
     const average =
-    document.getElementById("averageRating");
+        document.getElementById("averageRating");
 
 
     const pending =
-    document.getElementById("pendingReviews");
+        document.getElementById("pendingReviews");
 
 
     const approved =
-    document.getElementById("approvedReviews");
+        document.getElementById("approvedReviews");
 
 
+    if (total) {
+
+        total.textContent = data.length;
+
+    }
 
 
-    if(total)
+    const avg = data.length
 
-    total.textContent=data.length;
+        ? data.reduce(
 
+            (sum, review) =>
+                sum + Number(review.rating || 0),
 
+            0
 
+        ) / data.length
 
-    const avg = data.length ?
-
-    data.reduce(
-
-        (sum,review)=>
-        sum + review.rating,
-
-        0
-
-    ) / data.length
-
-    :0;
+        : 0;
 
 
+    if (average) {
 
-    if(average)
+        average.textContent =
+            avg.toFixed(1);
 
-    average.textContent =
-    avg.toFixed(1);
-
-
-
-
-    if(pending)
-
-    pending.textContent =
-    data.filter(
-        review=>!review.approved
-    ).length;
+    }
 
 
+    if (pending) {
+
+        pending.textContent =
+            data.filter(
+                review => !review.approved
+            ).length;
+
+    }
 
 
-    if(approved)
+    if (approved) {
 
-    approved.textContent =
-    data.filter(
-        review=>review.approved
-    ).length;
+        approved.textContent =
+            data.filter(
+                review => review.approved
+            ).length;
 
-
+    }
 
 }
-
-
-
-
-
-
-
 
 
 // ===============================
@@ -427,297 +351,309 @@ function updateStatistics(data){
 // ===============================
 
 const searchBox =
-document.getElementById("searchReview");
+    document.getElementById("searchReview");
 
 
-if(searchBox){
+if (searchBox) {
+
+    searchBox.addEventListener(
+        "input",
+        function () {
+
+            const value =
+                this.value
+                    .toLowerCase()
+                    .trim();
 
 
-searchBox.addEventListener(
-"input",
-function(){
+            const filtered =
+                reviews.filter(review => {
+
+                    const name =
+                        (review.name || "")
+                            .toLowerCase();
 
 
-    const value =
-    this.value.toLowerCase();
+                    const comment =
+                        (review.comment || "")
+                            .toLowerCase();
 
 
+                    return (
+                        name.includes(value) ||
+                        comment.includes(value)
+                    );
 
-    const filtered =
-    reviews.filter(review=>
-
-
-        review.name
-        .toLowerCase()
-        .includes(value)
+                });
 
 
+            displayReviews(filtered);
 
-        ||
-
-        review.comment
-        .toLowerCase()
-        .includes(value)
-
-
+        }
     );
 
-
-
-    displayReviews(filtered);
-
-
-
-});
-
-
 }
-
-
-
-
-
-
-
 
 
 // ===============================
 // VIEW REVIEW
 // ===============================
 
-function viewReview(id){
-
+window.viewReview = function (id) {
 
     const review =
-    reviews.find(
-        r=>r.id===id
-    );
+        reviews.find(
+            r => r.id === id
+        );
 
 
-
-    if(!review) return;
-
+    if (!review) return;
 
 
     const details =
-    document.getElementById("reviewDetails");
+        document.getElementById("reviewDetails");
 
 
+    if (details) {
 
-    if(details){
+        details.innerHTML = `
 
+            <p>
 
-        details.innerHTML=`
+                <strong>Name:</strong>
 
+                ${review.name || "N/A"}
 
-        <p>
-
-        <strong>Name:</strong>
-        ${review.name}
-
-        </p>
+            </p>
 
 
+            <p>
 
-        <p>
+                <strong>Rating:</strong>
 
-        <strong>Rating:</strong>
-        ${review.rating} ⭐
+                ${review.rating || 0} ⭐
 
-        </p>
-
-
-
-        <p>
-
-        <strong>Review:</strong>
-
-        </p>
+            </p>
 
 
+            <p>
 
-        <p>
+                <strong>Review:</strong>
 
-        ${review.comment}
-
-        </p>
-
+            </p>
 
 
-        <p>
+            <p>
 
-        <strong>Status:</strong>
+                ${review.comment || "No comment"}
 
-        ${review.approved ?
-        "Approved":"Pending"}
-
-        </p>
+            </p>
 
 
+            <p>
 
-        <p>
+                <strong>Status:</strong>
 
-        <strong>Date:</strong>
+                ${review.approved
+                    ? "Approved"
+                    : "Pending"}
 
-        ${formatDate(review.createdAt)}
+            </p>
 
-        </p>
 
+            <p>
+
+                <strong>Date:</strong>
+
+                ${formatDate(review.createdAt)}
+
+            </p>
 
         `;
-
 
     }
 
 
-
-    document.getElementById("reviewModal")
-    .style.display="flex";
-
-
-}
+    const modal =
+        document.getElementById("reviewModal");
 
 
+    if (modal) {
 
+        modal.style.display = "flex";
 
+    }
 
-
-
+};
 
 
 // ===============================
 // APPROVE REVIEW
 // ===============================
 
-async function approveReview(id){
+window.approveReview = async function (id) {
 
+    try {
 
-    try{
+        console.log(
+            "Approving review:",
+            id
+        );
 
 
         const response =
-        await fetch(
+            await fetch(
 
-        `http://localhost:5000/api/reviews/approve/${id}`,
+                `${API_BASE}/approve/${id}`,
 
-        {
+                {
 
-            method:"PUT",
+                    method: "PUT",
 
-            headers:authHeaders()
+                    headers: authHeaders()
 
-        });
+                }
+
+            );
 
 
-        if(!response.ok){
+        console.log(
+            "Approve response:",
+            response.status
+        );
 
-            throw new Error();
+
+        if (response.status === 401) {
+
+            logout();
+
+            return;
 
         }
 
 
+        if (!response.ok) {
 
-        loadReviews();
+            throw new Error(
+                `Failed to approve review. Status: ${response.status}`
+            );
 
+        }
+
+
+        alert("Review approved successfully.");
+
+
+        await loadReviews();
 
     }
 
 
-    catch(error){
+    catch (error) {
 
-
-        console.error(error);
-
-
-        alert(
-            "Failed to approve review"
+        console.error(
+            "Approve review error:",
+            error
         );
 
 
+        alert(
+            "Failed to approve review."
+        );
+
     }
 
-
-}
-
-
-
-
-
-
-
+};
 
 
 // ===============================
 // DELETE REVIEW
 // ===============================
 
-async function deleteReview(id){
+window.deleteReview = async function (id) {
+
+    const confirmDelete =
+        confirm(
+            "Delete this review?"
+        );
 
 
-    if(!confirm(
-        "Delete this review?"
-    ))
-
-    return;
+    if (!confirmDelete) return;
 
 
+    try {
 
-
-    try{
+        console.log(
+            "Deleting review:",
+            id
+        );
 
 
         const response =
-        await fetch(
+            await fetch(
 
-        `http://localhost:5000/api/reviews/${id}`,
+                `${API_BASE}/${id}`,
 
-        {
+                {
 
-            method:"DELETE",
+                    method: "DELETE",
 
-            headers:authHeaders()
+                    headers: authHeaders()
 
-        });
+                }
+
+            );
 
 
+        console.log(
+            "Delete response:",
+            response.status
+        );
 
-        if(!response.ok){
 
-            throw new Error();
+        if (response.status === 401) {
+
+            logout();
+
+            return;
 
         }
 
 
+        if (!response.ok) {
 
-        loadReviews();
+            throw new Error(
+                `Failed to delete review. Status: ${response.status}`
+            );
 
-
-
-    }
-
-
-    catch(error){
-
-
-        console.error(error);
+        }
 
 
         alert(
-            "Failed to delete review"
+            "Review deleted successfully."
         );
 
+
+        await loadReviews();
 
     }
 
 
-}
+    catch (error) {
+
+        console.error(
+            "Delete review error:",
+            error
+        );
 
 
+        alert(
+            "Failed to delete review."
+        );
 
+    }
 
-
-
-
+};
 
 
 // ===============================
@@ -725,53 +661,55 @@ async function deleteReview(id){
 // ===============================
 
 const closeBtn =
-document.querySelector(".close");
+    document.querySelector(".close");
 
 
-if(closeBtn){
+if (closeBtn) {
+
+    closeBtn.onclick = function () {
+
+        const modal =
+            document.getElementById(
+                "reviewModal"
+            );
 
 
-closeBtn.onclick=function(){
+        if (modal) {
 
+            modal.style.display = "none";
 
-document.getElementById("reviewModal")
-.style.display="none";
+        }
 
-
-};
-
-
-}
-
-
-
-
-
-
-
-
-window.onclick=function(event){
-
-
-const modal =
-document.getElementById("reviewModal");
-
-
-if(event.target===modal){
-
-    modal.style.display="none";
+    };
 
 }
 
 
-};
+// ===============================
+// CLOSE MODAL WHEN CLICKING OUTSIDE
+// ===============================
+
+window.addEventListener(
+    "click",
+    function (event) {
+
+        const modal =
+            document.getElementById(
+                "reviewModal"
+            );
 
 
+        if (
+            modal &&
+            event.target === modal
+        ) {
 
+            modal.style.display = "none";
 
+        }
 
-
-
+    }
+);
 
 
 // ===============================
@@ -779,135 +717,117 @@ if(event.target===modal){
 // ===============================
 
 const refreshBtn =
-document.getElementById("refreshBtn");
+    document.getElementById(
+        "refreshBtn"
+    );
 
 
-if(refreshBtn){
+if (refreshBtn) {
 
-refreshBtn.addEventListener(
-"click",
-loadReviews
-);
+    refreshBtn.addEventListener(
+        "click",
+        loadReviews
+    );
 
 }
-
-
-
-
-
-
-
 
 
 // ===============================
 // LOGOUT
 // ===============================
 
-function logout(){
+function logout() {
 
     localStorage.removeItem("token");
 
-    window.location.href="login.html";
+    localStorage.removeItem("admin");
+
+    window.location.href =
+        "login.html";
 
 }
-
 
 
 const logoutBtn =
-document.getElementById("logoutBtn");
+    document.getElementById(
+        "logoutBtn"
+    );
 
 
-if(logoutBtn){
+if (logoutBtn) {
 
-logoutBtn.addEventListener(
-"click",
-logout
-);
+    logoutBtn.addEventListener(
+        "click",
+        logout
+    );
 
 }
-
-
-
-
-
-
-
 
 
 // ===============================
 // DATE FORMAT
 // ===============================
 
-function formatDate(date){
+function formatDate(date) {
+
+    if (!date) {
+
+        return "N/A";
+
+    }
 
 
-return new Date(date)
-.toLocaleDateString(
+    return new Date(date)
+        .toLocaleDateString(
 
-"en-GB",
+            "en-GB",
 
-{
+            {
 
-year:"numeric",
+                year: "numeric",
 
-month:"short",
+                month: "short",
 
-day:"numeric"
+                day: "numeric"
+
+            }
+
+        );
 
 }
-
-);
-
-
-}
-
-
-
-
-
-
-
 
 
 // ===============================
 // EMPTY STATE
 // ===============================
 
-function showEmptyState(){
+function showEmptyState() {
+
+    const table =
+        document.getElementById(
+            "reviewTable"
+        );
 
 
-const table =
-document.getElementById("reviewTable");
+    if (table) {
 
+        table.innerHTML = `
 
-if(table){
+            <tr>
 
+                <td colspan="7">
 
-table.innerHTML=`
+                    Unable to load reviews.
 
-<tr>
+                </td>
 
-<td colspan="7">
+            </tr>
 
-Unable to load reviews.
+        `;
 
-</td>
-
-</tr>
-
-`;
+    }
 
 }
-
-
-}
-
-
-
-
-
-
-
 
 
 // ===============================
@@ -915,13 +835,10 @@ Unable to load reviews.
 // ===============================
 
 document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-"DOMContentLoaded",
+        loadReviews();
 
-()=>{
-
-    loadReviews();
-
-}
-
+    }
 );
