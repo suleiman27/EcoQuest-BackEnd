@@ -18,7 +18,7 @@ async function loadMessages() {
 
     try {
 
-        const response = await fetch("http://localhost:5000/api/messages", {
+        const response = await fetch("https://ecoquest-backend-r4d4.onrender.com/api/messages", {
             headers: {
                 Authorization: `Bearer ${token}`
             }
